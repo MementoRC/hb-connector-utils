@@ -5,14 +5,10 @@ platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
 [dependencies]
 python = ">=3.12,<3.13"
 
-[pypi-dependencies]
-hb-async-utils = { git = "https://github.com/MementoRC/hb-async-utils.git", rev = "development" }
-
 [feature.dev.dependencies]
 pytest = ">=9.0.3"
 pytest-asyncio = ">=0.21.0"
 pytest-cov = ">=7.1.0"
-pytest-mock = ">=3.0"
 pytest-timeout = ">=2.4.0"
 ruff = ">=0.15.10"
 mypy = ">=1.20.0"
