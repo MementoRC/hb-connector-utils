@@ -9,7 +9,7 @@ description = "Shared utilities for connector implementations across Hummingbot 
 requires-python = ">=3.12"
 license = {text = "Apache-2.0"}
 dependencies = [
-    "hb-async-utils>=0.1.0",
+    "hb-async-utils @ git+https://github.com/MementoRC/hb-async-utils@development",
 ]
 
 [project.optional-dependencies]

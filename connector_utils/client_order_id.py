@@ -14,7 +14,7 @@ from connector_utils.trading_pair import split_hb_trading_pair
 
 
 def _bot_instance_id() -> str:
-    return md5(f"{platform.uname()}_pid:{os.getpid()}_ppid:{os.getppid()}".encode("utf-8")).hexdigest()
+    return md5(f"{platform.uname()}_pid:{os.getpid()}_ppid:{os.getppid()}".encode("utf-8"), usedforsecurity=False).hexdigest()
 
 
 def get_new_client_order_id(
@@ -46,7 +46,7 @@ def get_new_client_order_id(
         id_prefix = f"{hbot_order_id_prefix}{side}{base_str}{quote_str}"
         suffix_max_length = max_id_len - len(id_prefix)
         if suffix_max_length < len(ts_hex):
-            id_suffix = md5(f"{ts_hex}{client_instance_id}".encode()).hexdigest()
+            id_suffix = md5(f"{ts_hex}{client_instance_id}".encode(), usedforsecurity=False).hexdigest()
             client_order_id = f"{id_prefix}{id_suffix[:suffix_max_length]}"
         else:
             client_order_id = client_order_id[:max_id_len]

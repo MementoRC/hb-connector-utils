@@ -6,7 +6,7 @@ platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
 python = ">=3.12,<3.13"
 
 [pypi-dependencies]
-hb-async-utils = { path = "../async-utils", editable = true }
+hb-async-utils = { git = "https://github.com/MementoRC/hb-async-utils.git", rev = "development" }
 
 [feature.dev.dependencies]
 pytest = ">=9.0.3"
