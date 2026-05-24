@@ -36,12 +36,15 @@ class TestSplitHbTradingPair:
         assert base == "eth"
         assert quote == "usdc"
 
-    @pytest.mark.parametrize("trading_pair,expected_base,expected_quote", [
-        ("BTC-USD", "BTC", "USD"),
-        ("ETH-USDT", "ETH", "USDT"),
-        ("HBOT-COINALPHA", "HBOT", "COINALPHA"),
-        ("XRP-EUR", "XRP", "EUR"),
-    ])
+    @pytest.mark.parametrize(
+        "trading_pair,expected_base,expected_quote",
+        [
+            ("BTC-USD", "BTC", "USD"),
+            ("ETH-USDT", "ETH", "USDT"),
+            ("HBOT-COINALPHA", "HBOT", "COINALPHA"),
+            ("XRP-EUR", "XRP", "EUR"),
+        ],
+    )
     def test_split_various_pairs(self, trading_pair, expected_base, expected_quote):
         """Test splitting various trading pairs."""
         base, quote = split_hb_trading_pair(trading_pair)
@@ -99,12 +102,15 @@ class TestCombineToHbTradingPair:
         result = combine_to_hb_trading_pair("HbOt", "CoInAlPhA")
         assert result == "HbOt-CoInAlPhA"
 
-    @pytest.mark.parametrize("base,quote,expected", [
-        ("BTC", "USD", "BTC-USD"),
-        ("ETH", "USDT", "ETH-USDT"),
-        ("HBOT", "COINALPHA", "HBOT-COINALPHA"),
-        ("XRP", "EUR", "XRP-EUR"),
-    ])
+    @pytest.mark.parametrize(
+        "base,quote,expected",
+        [
+            ("BTC", "USD", "BTC-USD"),
+            ("ETH", "USDT", "ETH-USDT"),
+            ("HBOT", "COINALPHA", "HBOT-COINALPHA"),
+            ("XRP", "EUR", "XRP-EUR"),
+        ],
+    )
     def test_combine_various_pairs(self, base, quote, expected):
         """Test combining various base and quote combinations."""
         result = combine_to_hb_trading_pair(base, quote)
@@ -150,13 +156,16 @@ class TestValidateTradingPair:
         """Test validation of lowercase pair."""
         assert validate_trading_pair("btc-usdt") is True
 
-    @pytest.mark.parametrize("trading_pair", [
-        "BTC-USD",
-        "ETH-USDT",
-        "HBOT-COINALPHA",
-        "XRP-EUR",
-        "A-B",
-    ])
+    @pytest.mark.parametrize(
+        "trading_pair",
+        [
+            "BTC-USD",
+            "ETH-USDT",
+            "HBOT-COINALPHA",
+            "XRP-EUR",
+            "A-B",
+        ],
+    )
     def test_validate_various_valid_pairs(self, trading_pair):
         """Test validation of various valid trading pairs."""
         assert validate_trading_pair(trading_pair) is True
