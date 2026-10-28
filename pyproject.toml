@@ -71,7 +71,7 @@ format-check = "ruff format --check connector_utils tests"
 typecheck = "mypy connector_utils"
 build = "hatchling build"
 coverage = "pytest tests/ --cov=connector_utils --cov-report=term-missing"
-quality = { depends-on = ["lint", "format-check"] }
+quality = { depends-on = ["lint", "format-check", "typecheck"] }
 check = { depends-on = ["quality", "typecheck", "test"] }
 
 [tool.pytest.ini_options]
