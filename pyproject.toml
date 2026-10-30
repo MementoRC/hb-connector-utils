@@ -71,8 +71,9 @@ format-check = "ruff format --check connector_utils tests"
 typecheck = "mypy connector_utils"
 build = "hatchling build"
 coverage = "pytest tests/ --cov=connector_utils --cov-report=term-missing"
-quality = { depends-on = ["lint", "format-check", "typecheck"] }
-check = { depends-on = ["quality", "typecheck", "test"] }
+check-conda-first = "python scripts/check_conda_first.py"
+quality = { depends-on = ["check-conda-first", "lint", "format-check", "typecheck"] }
+check = { depends-on = ["check-conda-first", "quality", "typecheck", "test"] }
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
