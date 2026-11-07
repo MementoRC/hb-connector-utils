@@ -37,8 +37,12 @@ def get_new_client_order_id(
     :param trading_pair: the trading pair the order will be operating with
     :param hbot_order_id_prefix: The hummingbot-specific identifier for the given exchange
     :param max_id_len: The maximum length of the ID string.
-    :param nonce: Optional nonce override (defaults to time.time_ns()). Inject
-        hummingbot's get_tracking_nonce() here to preserve exact upstream semantics.
+    :param nonce: Optional nonce override. The default, time.time_ns(), is
+        nanosecond-scale whereas in-tree get_tracking_nonce() is microsecond-scale,
+        so the id length and hex differ unless a nonce is injected. The default is
+        NOT guaranteed strictly increasing across rapid calls; callers needing
+        byte-for-byte parity or strict monotonicity must inject a monotonic nonce,
+        such as hummingbot's NonceCreator.get_tracking_nonce() / get_tracking_nonce().
     :return: an identifier for the new order to be used in the client
     """
     if nonce is None:
@@ -80,9 +84,12 @@ def get_new_numeric_client_order_id(
     if requested. This preserves the exact upstream format from hummingbot.connector.utils.
 
     :param max_id_bit_count: Optional maximum bit width for the returned integer.
-    :param nonce: Optional nonce override (defaults to time.time_ns()). Inject
-        hummingbot's NonceCreator.get_tracking_nonce() here to preserve exact
-        upstream semantics.
+    :param nonce: Optional nonce override. The default, time.time_ns(), is
+        nanosecond-scale whereas in-tree get_tracking_nonce() is microsecond-scale,
+        so the id length and digits differ unless a nonce is injected. The default
+        is NOT guaranteed strictly increasing across rapid calls; callers needing
+        byte-for-byte parity or strict monotonicity must inject a monotonic nonce,
+        such as hummingbot's NonceCreator.get_tracking_nonce() / get_tracking_nonce().
     :return: a numeric identifier for the new order
     """
     if nonce is None:
