@@ -22,6 +22,11 @@ from connector_utils.client_order_id import (
     get_new_client_order_id,
     get_new_numeric_client_order_id,
 )
+from connector_utils.trading_pair import (
+    combine_to_hb_trading_pair,
+    split_hb_trading_pair,
+    validate_trading_pair,
+)
 
 _NONCES = [1, 1640001112223334, 1640001112223334567]
 _FIXED_HOST = "0123456789abcdef0123456789abcdef"
@@ -71,6 +76,59 @@ def _ref_get_new_numeric_client_order_id(nonce, max_id_bit_count=None):
     return client_order_id
 
 
+def _ref_split_hb_trading_pair(trading_pair):
+    base, quote = trading_pair.split("-")
+    return base, quote
+
+
+def _ref_combine_to_hb_trading_pair(base, quote):
+    trading_pair = f"{base}-{quote}"
+    return trading_pair
+
+
+def _ref_validate_trading_pair(trading_pair):
+    valid = False
+    if "-" in trading_pair and len(trading_pair.split("-")) == 2:
+        valid = True
+    return valid
+
+
+_TRADING_PAIR_CASES = [
+    "BTC-USDT",
+    "ETH-USD",
+    "btc-usdt",
+    "Btc-UsdT",
+    "HBOT-COINALPHA",
+    "A-B-C",
+    "BTC-USDT-PERP",
+    "BTC-",
+    "-USDT",
+    "-",
+    "--",
+    "",
+    "BTCUSDT",
+    "BTC_USDT",
+    "BTC USDT",
+    " BTC - USDT ",
+    "BTC/USDT",
+    "₿-€",
+    "été-中文",
+    "1INCH-USDT",
+    "BTC–USDT",
+    "BTC-USDT\n",
+    None,
+    123,
+]
+
+
+def _outcome(func, *args):
+    """Return ('ok', value) or ('raise', exception type, message)."""
+    try:
+        return ("ok", func(*args))
+    except Exception as exc:
+        return ("raise", type(exc), str(exc))
+
+
 class _MonotonicMicroNonce:
     """Mimics hummingbot's NonceCreator (microsecond, strictly increasing)."""
 
@@ -116,6 +174,45 @@ class TestNumericClientOrderIdParity:
         expected = _ref_get_new_numeric_client_order_id(nonce, max_id_bit_count)
         actual = get_new_numeric_client_order_id(max_id_bit_count, nonce=nonce)
         assert actual == expected
+
+
+class TestTradingPairParity:
+    """Trading pair helpers must match the in-tree versions, including errors."""
+
+    @pytest.mark.parametrize("trading_pair", _TRADING_PAIR_CASES)
+    def test_split_matches_in_tree(self, trading_pair):
+        """Same result, or same exception type and message."""
+        assert _outcome(split_hb_trading_pair, trading_pair) == _outcome(
+            _ref_split_hb_trading_pair, trading_pair
+        )
+
+    @pytest.mark.parametrize("trading_pair", _TRADING_PAIR_CASES)
+    def test_validate_matches_in_tree(self, trading_pair):
+        """Same result, or same exception type and message."""
+        assert _outcome(validate_trading_pair, trading_pair) == _outcome(
+            _ref_validate_trading_pair, trading_pair
+        )
+
+    @pytest.mark.parametrize(
+        ("base", "quote"),
+        [
+            ("BTC", "USDT"),
+            ("ETH", "USD"),
+            ("btc", "usdt"),
+            ("", ""),
+            ("BTC", ""),
+            ("", "USDT"),
+            ("A-B", "C"),
+            ("₿", "€"),
+            (None, None),
+            (1, 2.5),
+        ],
+    )
+    def test_combine_matches_in_tree(self, base, quote):
+        """Same result, or same exception type and message."""
+        assert _outcome(combine_to_hb_trading_pair, base, quote) == _outcome(
+            _ref_combine_to_hb_trading_pair, base, quote
+        )
 
 
 class TestGoldenValues:
