@@ -1,3 +1,3 @@
 """Version information for hb-connector-utils."""
 
-__version__ = "0.1.1"
+__version__ = "0.1.1"  # x-release-please-version
